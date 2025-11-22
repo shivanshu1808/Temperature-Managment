@@ -1,4 +1,4 @@
-## Building Control Backend – Spring Boot
+## Building-Control(Backend) – Spring Boot
    - A backend system designed for temperature-controlled building automation.
    - It manages apartments, common rooms, heating/cooling logic, and serves JSON APIs for a modern control dashboard.
 ### Features
