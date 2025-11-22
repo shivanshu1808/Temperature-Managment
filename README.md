@@ -1,64 +1,47 @@
-## Building-Control(Backend) – Spring Boot
-   - A backend system designed for temperature-controlled building automation.
-   - It manages apartments, common rooms, heating/cooling logic, and serves JSON APIs for a modern control dashboard.
+## Apartment Building — Full-Stack (Backend + Frontend)
+- Project overview
+   - Backend: Spring Boot (Java), REST APIs, JPA, MySQL, Docker.
+   - Frontend: Next.js (React), Fetch API, dark theme dashboard.
+   - Purpose: Create and manage a Building with Apartments and Common Rooms, each room tracks temperature and automatically enables heating or cooling based on the building requested temperature.
+     
 ### Features
-### Room System
-- Each room (apartment or common room) includes:
-    - unique ID
-    - Random temperature (between 10°C – 40°C)
-    - Heating and cooling auto-evaluation
-    - Heating ON → if room temp below requested temperature
-    - Cooling ON → if room temp above requested temperature
+ - Rooms
+    - Each Room has:
+         - id (unique)
+         - currentTemperature (random 10°C — 40°C at creation)
+         - heatingEnabled (boolean)
+         - coolingEnabled (boolean)
+      - Heating/Cooling logic:
+           - If room.currentTemperature < building.requestedTemperature → heatingEnabled = true
+           - If room.currentTemperature > building.requestedTemperature → coolingEnabled = true
+           - Otherwise both disabled
+ - Apartment
+    - Inherits Room properties
+    - Additional fields: apartmentNumber, ownerName
+- CommonRoom
+    - Inherits Room properties
+    - Additional field: roomType ∈ {Gym, Library, Laundry}
+- Building
+     - Has a requestedTemperature (default 20.0°C)
+     - Contains zero or more Apartments and zero or more CommonRooms
+     - Can change requested temperature
+     - Can add Apartments / CommonRooms
+  - Initial state (main application)
+       - On startup the app creates a Building with:
+            - Apartments: 101, 102
+            - Common rooms: Gym, LibraryrequestedTemperature = 25.0°C
+       - The app evaluates each room and sets heating/cooling based on the requested temperature.
+         
+### Tech stack
+- Backend: Java 17, Spring Boot 3.x, Spring Web, Spring Data JPA, Hibernate
+- Database: MySQL (prod) / H2 (optional for tests)
+- Build: Maven
+- Container: Docker
+- Frontend: Next.js 16, React, CSS (dark theme)
+- Dev tools: IntelliJ, Node, Docker
 
-### Apartments
-- Inherits all room features
-- Additional:
-    - Apartment Number
-    - Owner Name
-
-### Common Room
-- Supported types:
-    -  `Gym`,`Library` or `Laundry`
-
-### Building
-- Can contain 0 or more apartments
-- Can contain 0 or more common rooms
-- Has a requested temperature (Default = 20°C)
-- API support for:
-    - Updating requested temperature
-    - Adding apartments
-    - Adding common rooms
-    - Getting full building status
-
-### Tech Stack
-  - Java 17
-  - Spring Boot 3
-  - Spring Web
-  - Spring Data JPA
-  - Hibernate ORM
-  - MySQL Database 
-  - Maven
-
-### Project Structure
-   - ![img_1.png](img_1.png)
-
-### API Endpoints
- - Create Initial Building
-      - Creates:
-          - Apartment 101
-          - Apartment 102 
-          - Gym 
-          - Library 
-          - Requested Temperature = 25°C
-            
-### Get Building by ID
-     - /api/building/{id}
-### Update Requested Temperature
-      - /api/building/{id}/temperature?newTemperature=26
-### Add Apartment
-      - /api/building/{id}/add-apartment
-### Add Common Room
-      - /api/building/{id}/add-common-room
-### Database 
-       - MySql
-      
+### Troubleshooting
+  - Failed to determine a suitable driver class” → Add MySQL connector dependency and set correct DB URL in application.properties.
+  - Next.js module not found → Ensure components/ folder & filenames exactly match imports; restart dev server (npm run dev) to clear Turbopack cache.
+  - CORS issues → Ensure backend allows frontend origin (or use proxy in Next dev).
+   
